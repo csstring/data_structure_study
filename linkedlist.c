@@ -11,35 +11,32 @@ LinkedList* createLinkedList()
     if (!temp)
         exit(12);
     temp->currentElementCount = 0;
-    temp->headerNode.pLink = (ListNode *)malloc(sizeof(ListNode));
+    temp->headerNode.pLink = NULL;
     temp->headerNode.data = 0;
     return (temp);    
 }
 
 int addLLElement(LinkedList* pList, int position, ListNode element)
-{//지들 들어갈 자리 malloc하고 들어가는게 맞는듯
+{
     ListNode    *temp;
 
-    temp = NULL;
     if (position < 0)
         return (FALSE);
-    if (pList->currentElementCount == 0)
-        *(pList->headerNode.pLink) = element;
+    temp = (ListNode *)malloc(sizeof(ListNode));
+    if (!temp)
+        exit(12);
+    *(temp) = element;
+    if (position == 0)
+    {
+        temp->pLink = pList->headerNode.pLink;
+        pList->headerNode.pLink = temp;
+    }
     else if (pList->currentElementCount - 1 < position)
-    {
-        temp = getLLElement(pList, pList->currentElementCount - 1);
-        *(temp->pLink) = element;
-    }
-    else if (position == 0)
-    {
-        element.pLink = pList->headerNode.pLink;
-        *(pList->headerNode.pLink) = element;
-    }
+        getLLElement(pList, pList->currentElementCount - 1)->pLink = temp;
     else
     {
-        element.pLink = getLLElement(pList, position);
-        temp = getLLElement(pList, position - 1);
-        *(temp->pLink) = element;
+        temp->pLink = getLLElement(pList, position);
+        getLLElement(pList, position - 1)->pLink = temp;
     }
     pList->currentElementCount++;
     return (TRUE);
@@ -52,24 +49,24 @@ int removeLLElement(LinkedList* pList, int position)
     temp = NULL;
     if (position < 0 || pList->currentElementCount - 1 < position)
         return (FALSE);
-    if (pList->currentElementCount == 1)//????프리 하면 다음 노드 못붙이고 NULL처리도 못하고
+    if (position == 0)
     {
-
-        free(pList->headerNode.pLink);
+        temp = pList->headerNode.pLink;
+        pList->headerNode.pLink = getLLElement(pList, 1);
+        free(temp);
     }
     else if (pList->currentElementCount - 1 == position)
-        getLLElement(pList, position - 1)->pLink = NULL;
-    else if (position == 0)
     {
-        temp = getLLElement(pList, 0);
-        pList->headerNode.pLink = getLLElement(pList, 1);
+        temp = getLLElement(pList, position - 1);
         free(temp->pLink);
-    }
+        temp->pLink = NULL;
+    }   
     else
     {
         temp = getLLElement(pList, position);
         getLLElement(pList, position - 1)->pLink = getLLElement(pList, position + 1);
-        free(temp->pLink);
+        temp->pLink = NULL;
+        free(temp);
     }
     pList->currentElementCount--;
     return (TRUE);
@@ -96,12 +93,13 @@ void clearLinkedList(LinkedList* pList)
 {
     while (removeLLElement(pList, 0));
 }
-
 //int getLinkedListLength(LinkedList* pList)
-/*oid deleteLinkedList(LinkedList* pList)
+void deleteLinkedList(LinkedList* pList)
 {
+    clearLinkedList(pList);
+    free(pList);
+}
 
-}*/
 void    list_init(LinkedList    *pList)
 {
     ListNode    temp[10];
@@ -111,21 +109,52 @@ void    list_init(LinkedList    *pList)
     while (i < 10)
     {
         temp[i].data = i;
-        temp[i].pLink = (ListNode *)malloc(sizeof(ListNode));
+        temp[i].pLink = NULL;
         addLLElement(pList, i, temp[i]);
         i++;
-        write(1,"1",1);
-        printf("init : %d\n",i);
     }
 }
-int main(void)
+
+void    display_list(LinkedList *plist)
 {
+    ListNode    *temp;
+
+    temp = plist->headerNode.pLink;
+    while (temp)
+        {
+            printf("data : %d\n", temp->data);
+            temp = temp->pLink;
+        }
+}
+
+void    main_tool(void)
+{    
     LinkedList  *list;
     int i;
-
+  
     list = createLinkedList();
     list_init(list);
-    while(i < 9)
-        printf("%d\n", getLLElement(list, i++)->data);
+    display_list(list);
+    clearLinkedList(list);
+    display_list(list);
+    printf("re_init\n");
+    list_init(list);
+    removeLLElement(list, 3);
+    removeLLElement(list, 13);
+    removeLLElement(list, 1);
+    display_list(list);
+    clearLinkedList(list);
+    list_init(list);
+    list_init(list);
+    display_list(list);
+    clearLinkedList(list);
+    printf("count : %d\n",list->currentElementCount);
+    deleteLinkedList(list);
+}
+
+int main(void)
+{
+    main_tool();
+    system("leaks a.out");
     return (0);
 }
