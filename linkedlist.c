@@ -91,11 +91,23 @@ ListNode* getLLElement(LinkedList* pList, int position)
 
 void clearLinkedList(LinkedList* pList)
 {
+    if (!pList)
+        return ;
     while (removeLLElement(pList, 0));
 }
-//int getLinkedListLength(LinkedList* pList)
+
+int getLinkedListLength(LinkedList* pList)
+{
+    if (!pList)
+        return (0);
+    else
+        return (pList->currentElementCount);
+}
+
 void deleteLinkedList(LinkedList* pList)
 {
+    if (!pList)
+        return ;
     clearLinkedList(pList);
     free(pList);
 }

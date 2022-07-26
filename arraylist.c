@@ -7,6 +7,8 @@ ArrayList   *createArrayList(int maxElementCount)
 {
     ArrayList   *temp;
 
+    if (maxElementCount < 0)
+        return (NULL);
     temp = (ArrayList *)malloc(sizeof(ArrayList) * (1));
     if (!temp)
         exit(12);
@@ -20,6 +22,8 @@ ArrayList   *createArrayList(int maxElementCount)
 
 void    deleteArrayList(ArrayList *pList)
 {
+    if (!pList)
+        return ;
     free(pList->pElement);
     free(pList);
 }
@@ -103,6 +107,13 @@ void clearArrayList(ArrayList* pList)
     pList->currentElementCount = 0;
 }
 
+int getArrayListLength(ArrayList* pList)
+{
+    if (!pList)
+        return (0);
+    else
+        return (pList->currentElementCount);
+}
 int main(void)
 {
     ArrayList *list;
