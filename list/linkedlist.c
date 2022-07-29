@@ -1,5 +1,4 @@
 #include "linkedlist.h"
-#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -12,7 +11,6 @@ LinkedList* createLinkedList()
         exit(12);
     temp->currentElementCount = 0;
     temp->headerNode.pLink = NULL;
-    temp->headerNode.data = 0;
     return (temp);    
 }
 
@@ -120,7 +118,7 @@ void    list_init(LinkedList    *pList)
     i = 0;
     while (i < 10)
     {
-        temp[i].data = i;
+        //temp[i].data = i;
         temp[i].pLink = NULL;
         addLLElement(pList, i, temp[i]);
         i++;
@@ -134,12 +132,12 @@ void    display_list(LinkedList *plist)
     temp = plist->headerNode.pLink;
     while (temp)
         {
-            printf("data : %d\n", temp->data);
+      //      printf("data : %d\n", temp->data);
             temp = temp->pLink;
         }
 }
 
-void    main_tool(void)
+/*void    main_tool(void)
 {    
     LinkedList  *list;
     int i;
@@ -162,11 +160,4 @@ void    main_tool(void)
     clearLinkedList(list);
     printf("count : %d\n",list->currentElementCount);
     deleteLinkedList(list);
-}
-
-int main(void)
-{
-    main_tool();
-    system("leaks a.out");
-    return (0);
-}
+}*/

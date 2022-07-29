@@ -21,7 +21,7 @@ int removeALElement(ArrayList* pList, int position);
 ArrayListNode* getALElement(ArrayList* pList, int position);
 void displayArrayList(ArrayList* pList);
 void clearArrayList(ArrayList* pList);
-int getArrayListLength(ArrayList* pList);//????
+int getArrayListLength(ArrayList* pList);
 
 #endif
 

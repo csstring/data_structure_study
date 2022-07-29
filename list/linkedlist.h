@@ -1,9 +1,11 @@
 #ifndef _LINKEDLIST_
 #define _LINKEDLIST_
-
+#include <stdlib.h>
 typedef struct ListNodeType
 {
-	int data;
+	int 	degree;
+	float	coef;
+	char	sign;
 	struct ListNodeType* pLink;
 } ListNode;
 
@@ -21,8 +23,13 @@ ListNode* getLLElement(LinkedList* pList, int position);
 void clearLinkedList(LinkedList* pList);
 int getLinkedListLength(LinkedList* pList);
 void deleteLinkedList(LinkedList* pList);
-
 void display_list(LinkedList *plist);
+
+//addpolynode
+int addPolyNodeLast(LinkedList* pList, float coef, int degree);
+void    poly_init(LinkedList *a, LinkedList *b);
+int poly_add(ListNode *a, ListNode *b, LinkedList *plist);
+
 #endif
 
 #ifndef _COMMON_LIST_DEF_
