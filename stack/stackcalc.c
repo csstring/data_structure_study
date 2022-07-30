@@ -4,23 +4,21 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int Levelcheck(char c)
+int Levelcheck(char c, int *level)
 {
-    static int level;
-
-    if (c == '[' && level >= -1)
+    if ((c == '[' && *level >= -1) || c == ']')
     {
-        level = -1;
+        *level = -1;
         return (TRUE);
     }
-    else if (c == '{' && level >= -2)
+    else if ((c == '{' && *level >= -2) || c == '}')
     {
-        level = -2;
+        *level = -2;
         return (TRUE);
     }
-    else if (c == '(' && level >= -3)
+    else if ((c == '(' && *level >= -3) || c == ')')
     {
-        level = -3;
+        *level = -3;
         return (TRUE);
     }
     return (FALSE);
@@ -44,23 +42,30 @@ void ft_makenode(char data, LinkedStack *pStack)
 int checkBracketMatching(char *expression)
 {
     LinkedStack *pStack;
+    int level;
     int i;
 
+    level = 0;
     if (!expression)
         return (FALSE);
-    i = 0;
     pStack = createLinkedStack();
     while (expression[i])
     {
         if (expression[i] == '(' || expression[i] == '{' || expression[i] == '[')
         {
-            if (!Levelcheck(expression[i]))
+            if (!Levelcheck(expression[i], &level))
                 return (FALSE);
             ft_makenode(expression[i], pStack);
         }
         else if ((expression[i] == ')' || expression[i] == '}' || expression[i] == ']') \
-                && peekLS(pStack)->data == expression[i])
+                && (pStack->pTopElement && peekLS(pStack)->data == expression[i]))
+                {
                     popLS(pStack);
+                    if (pStack->pTopElement)
+                        Levelcheck(peekLS(pStack)->data, &level);
+                    else
+                        level = 0;
+                }
         i++;
     }
     if (isLinkedStackEmpty(pStack))
