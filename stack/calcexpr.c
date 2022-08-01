@@ -7,13 +7,13 @@ int pushLSExprToken(LinkedStack* pStack, ExprToken data)
 {
     StackNode   temp;
 
-    temp.data = data;
+    temp.data.value = data.value;
+    temp.data.type = data.type;
     if (pushLS(pStack,temp))
         return (TRUE);
     return (FALSE);
 }
-//int inStackPrecedence(Precedence oper)
-//int outStackPrecedence(Precedence oper)
+
 void printToken(ExprToken element)
 {
     switch (element.type)
@@ -92,6 +92,7 @@ void    calcelse(LinkedStack *pStack, float value, int prec)
     free(second);
     pushLSExprToken(pStack, temp);
 }
+
 void calcExpr(LinkedStack *pStack, float value, int prec)
 {
     Precedence type = prec;
@@ -101,7 +102,7 @@ void calcExpr(LinkedStack *pStack, float value, int prec)
     else
         calcelse(pStack, value, type);
 }
-
+/*
 int main(int ac , char **av)
 {
     int i;
@@ -134,4 +135,4 @@ int main(int ac , char **av)
     if (pStack->currentElementCount == 1)
         printToken(pStack->pTopElement->data);
     return (0);
-}
+}*/

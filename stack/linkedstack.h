@@ -7,7 +7,7 @@ typedef enum PrecedenceType
 } Precedence;
 
 typedef struct ExprTokenType 
-{ 
+{
     float value;
     Precedence type;
 } ExprToken;
