@@ -32,7 +32,7 @@ StackNode* popLS(LinkedStack* pStack)
 {
     StackNode   *temp;
 
-    if (!pStack)
+    if (!pStack || !pStack->pTopElement)
         return (NULL);
     temp = pStack->pTopElement;
     pStack->pTopElement = temp->pLink;

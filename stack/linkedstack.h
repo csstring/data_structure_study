@@ -1,9 +1,21 @@
 #ifndef _LINKED_STACK_
 #define _LINKED_STACK_
 
+typedef enum PrecedenceType 
+{
+    lparen, rparen, times, divide, plus, minus, operand 
+} Precedence;
+
+typedef struct ExprTokenType 
+{ 
+    float value;
+    Precedence type;
+} ExprToken;
+
 typedef struct StackNodeType
 {
-	char data;
+//	char data;
+	ExprToken data;
 	struct StackNodeType* pLink;
 } StackNode;
 
