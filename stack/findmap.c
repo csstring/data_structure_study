@@ -180,7 +180,7 @@ void    print_move_map(LinkedStack *pStack, int map[HEIGHT][WIDTH])
         }
 }
 
-int main(int ac, char **av)
+int main(void)
 {
     int map[HEIGHT][WIDTH];
     LinkedStack *pStack;
@@ -191,4 +191,5 @@ int main(int ac, char **av)
     get_out(pStack, map);
     find_out(pStack, map);
     print_move_map(pStack ,map);
+    return (0);
 }
