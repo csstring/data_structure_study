@@ -165,7 +165,7 @@ void	dispalyLD(LinkedDeque* pDeque)
 		temp = temp->pLLink;
 	}
 }
-
+/*
 int	main(void)
 {
 	LinkedDeque	*pDeque;
@@ -195,4 +195,4 @@ int	main(void)
 	clearLinkdeDeque(pDeque);
 	dispalyLD(pDeque);
 	printf("end\n");
-}
+}*/
