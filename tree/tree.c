@@ -110,35 +110,36 @@ void clearBinTreeNode(BinTreeNode* pNode)
 		clearBinTreeNode(getLeftChildNodeBT(pNode));
 	if (getRightChildNodeBT(pNode))
 		clearBinTreeNode(getRightChildNodeBT(pNode));
-//	printf("free_node data : %c\n", pNode->data);
 	free(pNode);
 	pNode = NULL;
 }
-void deleteBinTreeNode2(BinTreeNode* pNode, BinTreeNode* left, BinTreeNode* right)
+void deleteBinTreeNode2(BinTreeNode **pNode, BinTreeNode* left, BinTreeNode* right)
 {
 	if (!left && !right)
 	{
-		free(pNode);
-		pNode = NULL;
+		free(*pNode);
+		*pNode = NULL;
 	}
 	else if (!right && left)
 	{
-		*pNode = *left;
-		free(left);
+		free(*pNode);
+		*pNode = left;
 	}
 	else if (right && !left)
 	{
-		*pNode = *right;
-		free(right);
+		free(*pNode);
+		*pNode = right;
 	}
 }
-void deleteBinTreeNode(BinTreeNode* pNode)
+void deleteBinTreeNode(BinTreeNode **temp)
 {
 	BinTreeNode	*child;
 	BinTreeNode	*right;
 	BinTreeNode	*left;
 	BinTreeNode	*parent;
+	BinTreeNode	*pNode;
 
+	pNode = *temp;
 	if (!pNode)
 		return ;
 	left = getLeftChildNodeBT(pNode);
@@ -146,7 +147,7 @@ void deleteBinTreeNode(BinTreeNode* pNode)
 	parent = pNode;
 	child = left;
 	if (!left || !right)
-		return (deleteBinTreeNode2(pNode, left, right));
+		return (deleteBinTreeNode2(temp, left, right));
 	else if (!left->pLeftChild && !left->pRightChild)
 	{
 		parent->pLeftChild = NULL;
@@ -219,8 +220,8 @@ BinTree	*make_tree(void)
 	insertRightChildNodeBT(right2_1, temp[10]);
 	insertLeftChildNodeBT(right2_2, temp[11]);
 	insertRightChildNodeBT(right2_2, temp[12]);
-	deleteBinTreeNode(right2_2->pLeftChild);
-	right2_2->pLeftChild = NULL;
+	deleteBinTreeNode(&right2_2->pLeftChild);
+	deleteBinTreeNode(&left2_1);
 	return (tree);
 }
 
