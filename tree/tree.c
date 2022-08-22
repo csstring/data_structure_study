@@ -4,7 +4,7 @@
 
 void	preorderTraversalBinTree(BinTreeNode* pNode)
 {
-	printf("%c", pNode->data);
+	printf("%d", pNode->data);
 	pNode->visited = 1;
 	if (getLeftChildNodeBT(pNode) && getLeftChildNodeBT(pNode)->visited == 0)
 		preorderTraversalBinTree(getLeftChildNodeBT(pNode));
@@ -16,7 +16,7 @@ void	inorderTraversalBinTree(BinTreeNode* pNode)
 {
 	if (getLeftChildNodeBT(pNode) && getLeftChildNodeBT(pNode)->visited == 0)
 		inorderTraversalBinTree(getLeftChildNodeBT(pNode));
-	printf("%c", pNode->data);
+	printf("%d", pNode->data);
 	pNode->visited = 1;
 	if (getRightChildNodeBT(pNode) && getRightChildNodeBT(pNode)->visited == 0)
 		inorderTraversalBinTree(getRightChildNodeBT(pNode));
@@ -28,7 +28,7 @@ void	levelOrderTraversalBinTree(BinTreeNode* pNode)
 		levelOrderTraversalBinTree(getLeftChildNodeBT(pNode));
 	if (getRightChildNodeBT(pNode) && getRightChildNodeBT(pNode)->visited == 0)
 		levelOrderTraversalBinTree(getRightChildNodeBT(pNode));
-	printf("%c", pNode->data);
+	printf("%d", pNode->data);
 	pNode->visited = 1;
 }
 
@@ -113,6 +113,26 @@ void clearBinTreeNode(BinTreeNode* pNode)
 	free(pNode);
 	pNode = NULL;
 }
+
+int	serch_data(BinTree *pBinTree, int key)
+{
+	BinTreeNode	*temp;
+
+	if (!pBinTree)
+		return (0);
+	temp = getRootNodeBT(pBinTree);
+	while (!temp)
+	{
+		if (temp->data == key)
+			return (0);
+		else if (temp->data > key)
+			temp = getLeftChildNodeBT(temp);
+		else
+			temp = getRightChildNodeBT(temp);
+	}
+	return (1);
+}
+
 void deleteBinTreeNode2(BinTreeNode **pNode, BinTreeNode* left, BinTreeNode* right)
 {
 	if (!left && !right)
@@ -131,6 +151,7 @@ void deleteBinTreeNode2(BinTreeNode **pNode, BinTreeNode* left, BinTreeNode* rig
 		*pNode = right;
 	}
 }
+
 void deleteBinTreeNode(BinTreeNode **temp)
 {
 	BinTreeNode	*child;
@@ -158,26 +179,12 @@ void deleteBinTreeNode(BinTreeNode **temp)
 	}
 	else
 	{
-		while (1)
+		while (getRightChildNodeBT(child))
 		{
-			if (getRightChildNodeBT(child))
-			{
-				parent = child;
-				child = getRightChildNodeBT(parent);
-				continue;
-			}
-			if (getLeftChildNodeBT(child))
-			{
-				parent = child;
-				child = getLeftChildNodeBT(parent);
-				continue;
-			}
-			break;
+			parent = child;
+			child = getRightChildNodeBT(parent);
 		}
-		if (getRightChildNodeBT(parent))
-			parent->pRightChild = NULL;
-		else
-			parent->pLeftChild = NULL;
+		parent->pRightChild = child->pLeftChild;
 		child->pLeftChild = pNode->pLeftChild;
 		child->pRightChild = pNode->pRightChild;
 		*pNode = *child;
@@ -199,7 +206,7 @@ BinTree	*make_tree(void)
 	int i;
 
 	i = 0;
-	input = 65;
+	input = 0;
 	while (i < 13)
 	{
 		temp[i].data = input++;
@@ -207,33 +214,33 @@ BinTree	*make_tree(void)
 		temp[i].pLeftChild = NULL;
 		temp[i++].pRightChild = NULL;
 	}
-	tree = makeBinTree(temp[0]);
-	left1= insertLeftChildNodeBT(getRootNodeBT(tree),temp[1]);
-	right1 = insertRightChildNodeBT(getRootNodeBT(tree), temp[2]);
-	left2_1 = insertLeftChildNodeBT(left1, temp[3]);
-	left2_2 = insertRightChildNodeBT(left1, temp[4]);
-	right2_1 = insertLeftChildNodeBT(right1, temp[5]);
-	right2_2 = insertRightChildNodeBT(right1, temp[6]);
-	insertLeftChildNodeBT(left2_1, temp[7]);
-	insertRightChildNodeBT(left2_1, temp[8]);
-	insertLeftChildNodeBT(left2_2, temp[9]);
-	insertRightChildNodeBT(right2_1, temp[10]);
+	tree = makeBinTree(temp[6]);
+	left1= insertLeftChildNodeBT(getRootNodeBT(tree),temp[3]);
+	right1 = insertRightChildNodeBT(getRootNodeBT(tree), temp[8]);
+	left2_1 = insertLeftChildNodeBT(left1, temp[1]);
+	left2_2 = insertRightChildNodeBT(left1, temp[5]);
+	right2_1 = insertLeftChildNodeBT(right1, temp[7]);
+	right2_2 = insertRightChildNodeBT(right1, temp[9]);
+	insertLeftChildNodeBT(left2_1, temp[0]);
+	insertRightChildNodeBT(left2_1, temp[2]);
+	insertLeftChildNodeBT(left2_2, temp[4]);
+/*	insertRightChildNodeBT(right2_1, temp[10]);
 	insertLeftChildNodeBT(right2_2, temp[11]);
-	insertRightChildNodeBT(right2_2, temp[12]);
-	deleteBinTreeNode(&right2_2->pLeftChild);
-	deleteBinTreeNode(&left2_1);
+	insertRightChildNodeBT(right2_2, temp[12]);*/
+//	deleteBinTreeNode(&right2_2->pLeftChild);
+//	deleteBinTreeNode(&left2_1);
 	return (tree);
 }
 
 int	main(void)
 {
 	BinTree	*tree;
+	BinTreeNode *temp;
 
 	tree = make_tree();
+	temp = getRootNodeBT(tree);
+	deleteBinTreeNode(&temp);
 	printf("preorder\n");
-	preorderTraversalBinTree(getRootNodeBT(tree));
-//	printf("\ninorder\n");
-//	inorderTraversalBinTree(getRootNodeBT(tree));
-//	levelOrderTraversalBinTree(getRootNodeBT(tree));
+	inorderTraversalBinTree(getRootNodeBT(tree));
 	deleteBinTree(tree);
 }
