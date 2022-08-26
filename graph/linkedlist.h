@@ -1,11 +1,10 @@
 #ifndef _LINKEDLIST_
 #define _LINKEDLIST_
 #include <stdlib.h>
+
 typedef struct ListNodeType
 {
-	int 	degree;
-	float	coef;
-	char	sign;
+	int 	weight;
 	int		vertexID;
 	struct ListNodeType* pLink;
 } ListNode;
