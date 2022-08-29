@@ -14,7 +14,7 @@ typedef struct LinkedGraphType
 	int currentVertexCount;	// ���� ���Ǵ� ����� ����
 	int currentEdgeCount;	// ���� ������ ����.
 	int graphType;			// �׷��� ����: 1-Undirected, 2-Directed
-	LinkedList** ppAdjEdge;	// ���� ������ ���� ���� ����Ʈ (������)�� �迭
+	LinkedList** ppAdjEdge;	
 	int *pVertex;			// ��� ������ ���� 1���� �迭
 } LinkedGraph;
 

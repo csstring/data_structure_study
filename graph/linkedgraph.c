@@ -1,6 +1,7 @@
 #include "linkedgraph.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "arrayqueue.h"
 
 LinkedGraph* createLinkedGraph(int maxVertexCount)
 {
@@ -11,9 +12,11 @@ LinkedGraph* createLinkedGraph(int maxVertexCount)
 		return (NULL);
 	temp = malloc(sizeof(LinkedGraph));
 	temp->pVertex = malloc(sizeof(int) * maxVertexCount);
+	temp->ppAdjEdge = (LinkedList **)malloc(sizeof(LinkedList *) * maxVertexCount);
 	while (i < maxVertexCount)
 		temp->ppAdjEdge[i++] = createLinkedList();
 	temp->graphType = UNDIRECTED;
+	temp->maxVertexCount = maxVertexCount;
 	temp->currentEdgeCount = 0;
 	temp->currentVertexCount = 0;
 	return (temp);
@@ -28,9 +31,11 @@ LinkedGraph* createLinkedDirectedGraph(int maxVertexCount)
 		return (NULL);
 	temp = malloc(sizeof(LinkedGraph));
 	temp->pVertex = malloc(sizeof(int) * maxVertexCount);
+	temp->ppAdjEdge = malloc(sizeof(LinkedList *) * maxVertexCount);
 	while (i < maxVertexCount)
 		temp->ppAdjEdge[i++] = createLinkedList();
 	temp->graphType = DIRECTED;
+	temp->maxVertexCount = maxVertexCount;
 	temp->currentEdgeCount = 0;
 	temp->currentVertexCount = 0;
 	return (temp);
@@ -53,7 +58,7 @@ int isEmptyLG(LinkedGraph* pGraph)
 {
 	if (!pGraph)
 		return (FALSE);
-	if (pGraph->currentVertexCountß == 0)
+	if (pGraph->currentVertexCount == 0)
 		return (TRUE);
 	return (FALSE);
 }
@@ -136,6 +141,7 @@ int removeVertexLG(LinkedGraph* pGraph, int vertexID)
 	clearLinkedList(pGraph->ppAdjEdge[vertexID]);
 	pGraph->pVertex[vertexID] = 0;
 	pGraph->currentVertexCount--;
+	return (TRUE);
 }
 
 int removeEdgeLG(LinkedGraph* pGraph, int fromVertexID, int toVertexID)
@@ -231,4 +237,89 @@ void displayLinkedGraph(LinkedGraph* pGraph)
 		printf("\n");
 		i++;
 	}
+}
+
+void	dfs_recursive(int i ,LinkedGraph *pGraph)
+{
+	ListNode*	temp;
+
+	temp = pGraph->ppAdjEdge[i]->headerNode.pLink;
+	pGraph->ppAdjEdge[i]->visit = 1;
+	printf("%d\n", i);
+	while (temp)
+	{
+		if (!pGraph->ppAdjEdge[temp->vertexID]->visit)
+			dfs_recursive(temp->vertexID, pGraph);
+		temp = temp->pLink;
+	}
+}
+
+void	traver_bfs(LinkedGraph *pGraph)
+{
+	int	i = 0;
+	ArrayQueue	*pQueue;
+	ArrayQueueNode	temp;
+	ListNode	*list_node;
+	
+	pQueue = createArrayQueue(8);
+	while (i < pGraph->maxVertexCount)
+	{
+		if (pGraph->pVertex[i])
+			break;
+		i++;
+	}
+	temp.vertexID = i;
+	printf("%d\n", temp.vertexID);
+	pGraph->ppAdjEdge[temp.vertexID]->visit = 1;
+	enqueueAQ(pQueue, temp);
+	while (!isArrayQueueEmpty(pQueue))
+	{
+		list_node = pGraph->ppAdjEdge[peekAQ(pQueue)->vertexID]->headerNode.pLink;
+		while (list_node)
+		{	
+			if (!pGraph->ppAdjEdge[list_node->vertexID]->visit)
+			{
+				printf("%d\n", list_node->vertexID);
+				pGraph->ppAdjEdge[list_node->vertexID]->visit = 1;
+				temp.vertexID = list_node->vertexID;
+				enqueueAQ(pQueue, temp);
+			}
+			list_node = list_node->pLink;
+		}
+		dequeueAQ(pQueue);
+	}
+}
+
+void	traver_dfs(LinkedGraph* pGraph)
+{
+	int	i = 0;
+
+	while (i < pGraph->maxVertexCount)
+	{
+		if (pGraph->pVertex[i])
+			break;
+		i++;
+	}
+	dfs_recursive(i, pGraph);
+}
+
+int	main(void)
+{
+	LinkedGraph	*pGraph;
+	int	i = 0;
+
+	pGraph = createLinkedGraph(8);
+	while (i < 8)
+		addVertexLG(pGraph, i++);
+	addEdgeLG(pGraph, 0 , 1);
+	addEdgeLG(pGraph, 0 , 2);
+	addEdgeLG(pGraph, 1 , 3);
+	addEdgeLG(pGraph, 1 , 4);
+	addEdgeLG(pGraph, 2 , 5);
+	addEdgeLG(pGraph, 2 , 6);
+	addEdgeLG(pGraph, 3 , 7);
+	addEdgeLG(pGraph, 4 , 5);
+	displayLinkedGraph(pGraph);
+	traver_bfs(pGraph);
+	return (0);
 }

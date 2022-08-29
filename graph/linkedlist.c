@@ -9,6 +9,7 @@ LinkedList* createLinkedList()
     temp = (LinkedList *)malloc(sizeof(LinkedList));
     if (!temp)
         exit(12);
+	temp->visit = 0;
     temp->currentElementCount = 0;
     temp->headerNode.pLink = NULL;
     return (temp);    

@@ -11,7 +11,8 @@ typedef struct ListNodeType
 
 typedef struct LinkedListType
 {
-	int currentElementCount;	// 현재 저장된 원소의 개수
+	int		visit;
+	int 	currentElementCount;	// 현재 저장된 원소의 개수
 	ListNode headerNode;		// 헤더 노드
 } LinkedList;
 
