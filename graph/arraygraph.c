@@ -8,7 +8,7 @@ ArrayGraph* createArrayGraph(int maxVertexCount)
 	int	i;
 
 	i = 0;
-	if (maxVertexCount < 0)
+	if (maxVertexCount < 1)
 		return (NULL);
 	temp = malloc(sizeof(ArrayGraph));
 	temp->currentVertexCount = 0;
@@ -58,7 +58,7 @@ int isEmptyAG(ArrayGraph* pGraph)
 {
 	if (!pGraph)
 		return (FALSE);
-	if (pGraph->currentVertexCount < pGraph->maxVertexCount)
+	if (pGraph->currentVertexCount == 0)
 		return (TRUE);
 	return (FALSE);
 }
@@ -158,7 +158,7 @@ void displayArrayGraph(ArrayGraph* pGraph)
 		printf("nonexit graph\n");
 	printf("max vertex count : %d\n", pGraph->maxVertexCount);
 	printf("current vertex count : %d\n", pGraph->currentVertexCount);
-	if (pGraph->graphType == 0)
+	if (pGraph->graphType == UNDIRECTED)
 		printf("graphType : undirected\n");
 	else
 		printf("graphType : directed\n");

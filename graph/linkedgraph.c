@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "arrayqueue.h"
+#include "linkeddeque.h"
 
 LinkedGraph* createLinkedGraph(int maxVertexCount)
 {
@@ -11,7 +12,7 @@ LinkedGraph* createLinkedGraph(int maxVertexCount)
 	if (maxVertexCount < 1)
 		return (NULL);
 	temp = malloc(sizeof(LinkedGraph));
-	temp->pVertex = malloc(sizeof(int) * maxVertexCount);
+	temp->pVertex = calloc(sizeof(int) , maxVertexCount);
 	temp->ppAdjEdge = (LinkedList **)malloc(sizeof(LinkedList *) * maxVertexCount);
 	while (i < maxVertexCount)
 		temp->ppAdjEdge[i++] = createLinkedList();
@@ -30,7 +31,7 @@ LinkedGraph* createLinkedDirectedGraph(int maxVertexCount)
 	if (maxVertexCount < 1)
 		return (NULL);
 	temp = malloc(sizeof(LinkedGraph));
-	temp->pVertex = malloc(sizeof(int) * maxVertexCount);
+	temp->pVertex = calloc(sizeof(int) , maxVertexCount);
 	temp->ppAdjEdge = malloc(sizeof(LinkedList *) * maxVertexCount);
 	while (i < maxVertexCount)
 		temp->ppAdjEdge[i++] = createLinkedList();
@@ -83,6 +84,7 @@ int addEdgeLG(LinkedGraph* pGraph, int fromVertexID, int toVertexID)
 		return (FALSE);
 	add.vertexID = toVertexID;
 	add.weight = 1;
+	add.visit = 0;
 	add.pLink = NULL;
 	if (pGraph->graphType == UNDIRECTED)
 	{
@@ -107,6 +109,7 @@ int addEdgewithWeightLG(LinkedGraph* pGraph, int fromVertexID, int toVertexID, i
 		return (FALSE);
 	add.vertexID = toVertexID;
 	add.weight = weight;
+	add.visit = 0;
 	add.pLink = NULL;
 	if (pGraph->graphType == UNDIRECTED)
 	{
@@ -135,7 +138,8 @@ int removeVertexLG(LinkedGraph* pGraph, int vertexID)
 		return (FALSE);
 	while (i < pGraph->maxVertexCount)
 	{
-		if (removeLLElement(pGraph->ppAdjEdge[i], findGraphNodePosition(pGraph->ppAdjEdge[i], vertexID)) == TRUE)
+		if (removeLLElement(pGraph->ppAdjEdge[i], \
+			findGraphNodePosition(pGraph->ppAdjEdge[i], vertexID)) == TRUE)
 			pGraph->currentEdgeCount--;
 		i++;
 	}
@@ -246,6 +250,45 @@ void displayLinkedGraph(LinkedGraph* pGraph)
 	}
 }
 
+void	traver_bfs(LinkedGraph *pGraph)
+{
+	int	i = 0;
+	LinkedDeque	*pQueue;
+	DequeNode	temp;
+	ListNode	*list_node;
+	
+	pQueue = createLinkedDeque();
+	while (i < pGraph->maxVertexCount)
+	{
+		if (pGraph->pVertex[i])
+			break;
+		i++;
+	}
+	temp.vertexID = i;
+	temp.pLLink = NULL;
+	temp.pRLink = NULL;
+	pGraph->ppAdjEdge[temp.vertexID]->visit = 1;
+	insertRearLD(pQueue, temp);
+	while (!isLinkedDequeEmpty(pQueue))
+	{
+		printf("%d\n", peekFrontLD(pQueue)->vertexID);
+		list_node = pGraph->ppAdjEdge[deleteFrontLD(pQueue)->vertexID]->headerNode.pLink;
+		while (list_node)
+		{	
+			if (!pGraph->ppAdjEdge[list_node->vertexID]->visit)
+			{
+				pGraph->ppAdjEdge[list_node->vertexID]->visit = 1;
+				temp.vertexID = list_node->vertexID;
+				temp.pLLink = NULL;
+				temp.pRLink = NULL;
+				insertRearLD(pQueue, temp);
+			}
+			list_node = list_node->pLink;
+		}
+	}
+	deleteLinkedDeque(pQueue);
+}
+
 void	dfs_recursive(int from, LinkedGraph *pGraph)
 {
 	ListNode*	temp;
@@ -259,43 +302,6 @@ void	dfs_recursive(int from, LinkedGraph *pGraph)
 			dfs_recursive(temp->vertexID, pGraph);
 		temp = temp->pLink;
 	}
-}
-
-void	traver_bfs(LinkedGraph *pGraph)
-{
-	int	i = 0;
-	ArrayQueue	*pQueue;
-	ArrayQueueNode	temp;
-	ListNode	*list_node;
-	
-	pQueue = createArrayQueue(pGraph->maxVertexCount);
-	while (i < pGraph->maxVertexCount)
-	{
-		if (pGraph->pVertex[i])
-			break;
-		i++;
-	}
-	temp.vertexID = i;
-	printf("%d\n", temp.vertexID);
-	pGraph->ppAdjEdge[temp.vertexID]->visit = 1;
-	enqueueAQ(pQueue, temp);
-	while (!isArrayQueueEmpty(pQueue))
-	{
-		list_node = pGraph->ppAdjEdge[peekAQ(pQueue)->vertexID]->headerNode.pLink;
-		while (list_node)
-		{	
-			if (!pGraph->ppAdjEdge[list_node->vertexID]->visit)
-			{
-				printf("%d\n", list_node->vertexID);
-				pGraph->ppAdjEdge[list_node->vertexID]->visit = 1;
-				temp.vertexID = list_node->vertexID;
-				enqueueAQ(pQueue, temp);
-			}
-			list_node = list_node->pLink;
-		}
-		dequeueAQ(pQueue);
-	}
-	deleteArrayQueue(pQueue);
 }
 
 void	traver_dfs(LinkedGraph* pGraph)
@@ -312,8 +318,8 @@ void	traver_dfs(LinkedGraph* pGraph)
 	}
 	dfs_recursive(i, pGraph);
 }
-
-#define MAX_COUNT 9
+/*
+#define MAX_COUNT 8
 
 int	main(void)
 {
@@ -321,13 +327,10 @@ int	main(void)
 	int	i = 0;
 
 	pGraph = createLinkedGraph(MAX_COUNT);
-	/* pGraph = createLinkedDirectedGraph(MAX_COUNT); */
+	 pGraph = createLinkedDirectedGraph(MAX_COUNT); 
 	while (i < MAX_COUNT)
 	{
-		if (i != 3)
 			addVertexLG(pGraph, i++);
-		else
-			i++;
 	}
 	addEdgeLG(pGraph, 0 , 1);
 	addEdgeLG(pGraph, 0 , 2);
@@ -336,12 +339,10 @@ int	main(void)
 	addEdgeLG(pGraph, 2 , 5);
 	addEdgeLG(pGraph, 2 , 6);
 	addEdgeLG(pGraph, 3 , 7);
-	addEdgeLG(pGraph, 8 , 7);
 	addEdgeLG(pGraph, 4 , 5);
 	displayLinkedGraph(pGraph);
 	printf("========\n");
 	traver_bfs(pGraph);
-	/* traver_dfs(pGraph); */
-	system("leaks $PPID");
+	traver_dfs(pGraph); 
 	return (0);
-}
+}*/

@@ -6,6 +6,7 @@ typedef struct ListNodeType
 {
 	int 	weight;
 	int		vertexID;
+	int		visit;
 	struct ListNodeType* pLink;
 } ListNode;
 
