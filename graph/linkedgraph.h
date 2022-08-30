@@ -43,7 +43,7 @@ int removeVertexLG(LinkedGraph* pGraph, int vertexID);
 
 // ���� ����
 int removeEdgeLG(LinkedGraph* pGraph, int fromVertexID, int toVertexID);
-void deleteGraphNode(LinkedList* pList, int delVertexID);
+int deleteGraphNode(LinkedList* pList, int delVertexID);
 int findGraphNodePosition(LinkedList* pList, int vertexID);
 
 // ���� ���� ��ȯ

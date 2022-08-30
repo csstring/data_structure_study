@@ -37,13 +37,14 @@ ArrayGraph* createArrayDirectedGraph(int maxVertexCount)
 	while (i < maxVertexCount)
 		temp->ppAdjEdge[i++] = (int *)malloc(sizeof(int) * maxVertexCount);
 	temp->pVertex = malloc(sizeof(int) * maxVertexCount);
+	return (temp);
 }
 
 void deleteArrayGraph(ArrayGraph* pGraph)
 {
 	int	i;
 
-	i = 0
+	i = 0;
 	if (!pGraph)
 		return ;
 	while (i < pGraph->maxVertexCount)
@@ -123,9 +124,11 @@ int removeVertexAG(ArrayGraph* pGraph, int vertexID)
 	{
 		pGraph->ppAdjEdge[vertexID][i] = 0;
 		pGraph->ppAdjEdge[i][vertexID] = 0;
+		i++;
 	}
 	pGraph->pVertex[vertexID] = 0;
 	pGraph->currentVertexCount--;
+	return (TRUE);
 }
 
 int removeEdgeAG(ArrayGraph* pGraph, int fromVertexID, int toVertexID)
