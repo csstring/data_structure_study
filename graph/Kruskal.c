@@ -53,7 +53,7 @@ int	main(void)
 	LinkedGraph	*origin;
 	LinkedGraph *kruskal;
 
-	origin = init_origin_graph();
+	origin = init_origin_graph(DIRECTED);
 	pHeap = get_minheap(origin);
 	displayLinkedGraph(origin);
 	kruskal = kruskal_do(pHeap);

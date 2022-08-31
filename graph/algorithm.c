@@ -1,6 +1,7 @@
 #include "algorithm.h"
 #include "heap.h"
 #include "linkedlist.h"
+#include <stdio.h>
 
 int	dfs_recursive_edge(int fromVertexID, int toVertexID, LinkedGraph *pGraph, int start_ID)
 {
@@ -10,13 +11,15 @@ int	dfs_recursive_edge(int fromVertexID, int toVertexID, LinkedGraph *pGraph, in
 		return (FAIL);
 	getLLElement(pGraph->ppAdjEdge[fromVertexID], \
 				findGraphNodePosition(pGraph->ppAdjEdge[fromVertexID], toVertexID))->visit = 1;
-	getLLElement(pGraph->ppAdjEdge[toVertexID], \
+	if (pGraph->graphType == UNDIRECTED)
+		getLLElement(pGraph->ppAdjEdge[toVertexID], \
 				findGraphNodePosition(pGraph->ppAdjEdge[toVertexID], fromVertexID))->visit = 1;
 	temp = pGraph->ppAdjEdge[toVertexID]->headerNode.pLink;
 	while (temp)
 	{
 		if (!temp->visit)
-		{
+		{printf("start %d : from : %d to : %d\n",start_ID, toVertexID, temp->vertexID);
+			displayLinkedGraph(pGraph);
 			if (dfs_recursive_edge(toVertexID, temp->vertexID, pGraph, start_ID) == FAIL)
 				return (FAIL);
 		}
@@ -65,13 +68,15 @@ int	cycle_check(LinkedGraph *kruskal)
 	return(SUCCESS);
 }
 
-LinkedGraph	*init_origin_graph(void)
+LinkedGraph	*init_origin_graph(enum e_arraygraph_type	type)
 {
 	LinkedGraph	*temp;
 	int	i = 0;
 
-//	temp = createLinkedGraph(MAX_COUNT);
-	temp = createLinkedDirectedGraph(MAX_COUNT);
+	if (type == UNDIRECTED)
+		temp = createLinkedGraph(MAX_COUNT);
+	else
+		temp = createLinkedDirectedGraph(MAX_COUNT);
 	while (i < MAX_COUNT)
 		addVertexLG(temp, i++);
 	addEdgewithWeightLG(temp, 0, 1, 4);
